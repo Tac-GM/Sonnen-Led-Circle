@@ -1,0 +1,51 @@
+#include <Adafruit_NeoPixel.h>
+
+#define LED_PIN     2
+#define NUM_LEDS    300 // set numbers of LEDs
+#define BRIGHTNESS  255
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+const uint8_t zoneSize = NUM_LEDS / 6; //12 or 6
+const uint32_t colors[12] = {
+    strip.Color(0, 64, 250),
+    //strip.Color(0, 64, 250),
+    strip.Color(0, 48, 188),
+    //strip.Color(0, 48, 188),
+    strip.Color(0, 64, 250),
+    //strip.Color(0, 64, 250),
+    strip.Color(255, 179, 126),
+    strip.Color(255, 109, 33),
+    //strip.Color(255, 109, 33),
+    //strip.Color(255, 109, 33),
+    //strip.Color(255, 109, 33),
+    strip.Color(255, 179, 126)
+};
+
+void setup() {
+  strip.begin();
+  strip.setBrightness(BRIGHTNESS);
+}
+
+void loop() {
+  static uint16_t offset = 0;
+  
+  for (uint8_t zone = 0; zone < 6; zone++) {//12 or 6
+    for (uint8_t i = 0; i < zoneSize; i++) {
+      uint16_t index = (zone * zoneSize + i + offset) % NUM_LEDS;
+      if (index < 0) {
+        index += NUM_LEDS;
+      }
+      strip.setPixelColor(index, colors[zone]);
+    }
+  }
+
+  strip.show();
+  delay(200);
+
+  offset = (offset - 1);//rotation. Change +/-
+  if (offset < 0) {
+    offset += NUM_LEDS;
+    }
+}
+//~Tac https://github.com/Tac-GM
